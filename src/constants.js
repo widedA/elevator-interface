@@ -1,1 +1,1 @@
-export const OUTBOUND_NUMBER = '+491723679291'
+export const OUTBOUND_NUMBER = ''
