@@ -9,7 +9,8 @@ function App() {
 
   const [token, setToken] = useState('')
   const [device, setDevice] = useState('')
-
+  const [text, setText] = useState('An error has occured!! Please click the Alert button')
+  
   useEffect(() => {
     fetch('https://twilio-voice-javascript-sdk-quickstart-node-3436-dev.twil.io/token')
       .then((response) => response.json())
@@ -40,12 +41,13 @@ function App() {
   }
 
   const callEmergency = async () => {
+    setText('...Calling')
     const params = { To: OUTBOUND_NUMBER}
     if (device) {
       console.log(`Attempting to call ${params.To} ...`);
 
       const call = await device.connect({ params });
-
+      call.on('accept', () => setText('Call accepted'));
       /*  Uncomment & adapt listneres to the UI
           call.on('accept', () => console.log('call accepted'));
           call.on('disconnect', () => console.log('call disconnected'));
@@ -53,7 +55,7 @@ function App() {
           call.on('reject', () => console.log('call rejected'));
       */
     } else {
-      console.log('Unable to make call.');
+      setText('Unable to make call. Please try again.');
     }
   }
   
@@ -64,7 +66,9 @@ function App() {
           <div style={styles.floorNumber}/>
           <div style={styles.arrowUp}></div>
         </div>
-        <label style={styles.alertMsg}>Hello! An error has occured our agent will answer shortly</label>
+        <div style={styles.alert}>
+          <label style={styles.alertMsg}>{text}</label>
+        </div>
       </div>
       <div style={styles.content}>
         <button  onClick={() => console.log("floor 1")} style={styles.button}><label style={styles.text}>1</label></button>

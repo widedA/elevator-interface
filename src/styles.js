@@ -79,11 +79,12 @@ const styles= {
       borderRight: '30px solid transparent',
       borderBottom: '30px solid green',
     },
-    alertMsg: {
+    alert: {
+      width: '100%',
       fontFamily: 'courier,fixed',
       fontSize: '35px',
       color: 'red',
-      padding: '15px'
+      padding: '30px 0px 30px 30px'
     },
   }
 
