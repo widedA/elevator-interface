@@ -3,8 +3,8 @@
 
 ## Launch the app
 
-### `npm install` 
+1. `npm install` 
 
-### Set the `OUTBOUND_NUMBER` in `src/constants.js`
+2. Set the `OUTBOUND_NUMBER` in `src/constants.js`
 
-### `npm start`
+3. `npm start`
