@@ -33,6 +33,12 @@ const styles= {
       justifyContent: 'space-between',
       paddingBottom: '40px',
     },
+    last: {
+      alignItems: 'center',
+      display: 'flex',
+      justifyContent: 'space-between',
+      paddingBottom: '100px'
+    },
     button: {
       backgroundImage: 'linear-gradient(to right, darkGrey, darkGrey, white)',
       border: '15px double #7d7d7d',

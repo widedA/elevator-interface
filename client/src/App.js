@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Device } from '@twilio/voice-sdk';
+import { Client as ConversationsClient } from '@twilio/conversations';
 
 import { OUTBOUND_NUMBER } from './constants';
 import styles from './styles'
@@ -8,22 +9,27 @@ import NotificationIcon from './notificationIcon'
 function App() {
 
   const [token, setToken] = useState('')
+  const [identity, setIdentity] = useState('')
   const [device, setDevice] = useState('')
-  const [text, setText] = useState('An error has occured!! Please click the Alert button')
-  
+  const [alertText, setAlertText] = useState('An error has occured!! Please click the Alert button')
+  const [conversationClient, setConversationsClient] = useState('') 
+  const [conversations, setConversations] = useState([])
+
   useEffect(() => {
-    fetch('https://twilio-voice-javascript-sdk-quickstart-node-3436-dev.twil.io/token')
+    fetch('https://chat-5758.twil.io/token')
       .then((response) => response.json())
       .then((data) => {
         setToken(data.token)
+        setIdentity(data.identity)
       })
   },[])
 
   useEffect(() =>{
-    if(token) {
+    if(token && identity) {
       initDevice()
+      initConversations()
     }
-  }, [token])
+  }, [token, identity])
 
   const initDevice = () => {
     const newDevice = new Device(token, {
@@ -40,14 +46,35 @@ function App() {
     setDevice(newDevice)
   }
 
+
+  const initConversations = () => {
+    const newConversationsClient = new ConversationsClient(token)
+    console.log({newConversationsClient})
+    newConversationsClient.on('connectionStateChanged', (state) => {
+      console.log('connectionStateChanged', state)
+    })
+    newConversationsClient.on('conversationJoined', (conversation) =>
+      setConversations([...conversations, conversation])
+    );
+    newConversationsClient.on('conversationLeft', (thisConversation) =>
+      setConversations([...conversations.filter((it) => it !== thisConversation)])
+    );
+    newConversationsClient.on('messageAdded', (message) => {
+      const { author, body} = message
+      if (author === identity ) { 
+        setAlertText(body) 
+      }
+    })
+
+    setConversationsClient(newConversationsClient)
+  };
+
   const callEmergency = async () => {
-    setText('...Calling')
     const params = { To: OUTBOUND_NUMBER}
     if (device) {
       console.log(`Attempting to call ${params.To} ...`);
 
       const call = await device.connect({ params });
-      call.on('accept', () => setText('Call accepted'));
       /*  Uncomment & adapt listneres to the UI
           call.on('accept', () => console.log('call accepted'));
           call.on('disconnect', () => console.log('call disconnected'));
@@ -55,7 +82,7 @@ function App() {
           call.on('reject', () => console.log('call rejected'));
       */
     } else {
-      setText('Unable to make call. Please try again.');
+      setAlertText('Unable to make call. Please try again.');
     }
   }
   
@@ -67,22 +94,22 @@ function App() {
           <div style={styles.arrowUp}></div>
         </div>
         <div style={styles.alert}>
-          <label style={styles.alertMsg}>{text}</label>
+          <label style={styles.alertMsg}>{alertText}</label>
         </div>
       </div>
       <div style={styles.content}>
         <button  onClick={() => console.log("floor 1")} style={styles.button}><label style={styles.text}>1</label></button>
-        <button  onClick={() => console.log("floor 1")} style={styles.button}><label style={styles.text}>2</label></button>
+        <button  onClick={() => console.log("floor 2")} style={styles.button}><label style={styles.text}>2</label></button>
       </div>
       <div style={styles.content}>
-        <button  onClick={() => console.log("floor 1")} style={styles.button}><label style={styles.text}>3</label></button>
-        <button  onClick={() => console.log("floor 1")} style={styles.button}><label style={styles.text}>4</label></button>
+        <button  onClick={() => console.log("floor 3")} style={styles.button}><label style={styles.text}>3</label></button>
+        <button  onClick={() => console.log("floor 4")} style={styles.button}><label style={styles.text}>4</label></button>
       </div>
       <div style={styles.content}>
-        <button  onClick={() => console.log("floor 1")} style={styles.button}><label style={styles.text}>5</label></button>
-        <button  onClick={() => console.log("floor 1")} style={styles.button}><label style={styles.text}>6</label></button>
+        <button  onClick={() => console.log("floor 5")} style={styles.button}><label style={styles.text}>5</label></button>
+        <button  onClick={() => console.log("floor 6")} style={styles.button}><label style={styles.text}>6</label></button>
       </div>
-      <div style={styles.content}>
+      <div style={styles.last}>
         <button  onClick={() => console.log('close')} style={styles.button}>
           <div style={styles.actionButtons}>
             <div style={styles.arrowRight}></div>

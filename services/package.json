@@ -1,0 +1,16 @@
+{
+    "name": "elevator",
+    "version": "0.1.0",
+    "author": "wided agrebi",
+    "private": true,
+    "dependencies": {
+        "lodash": "4.17.11",
+        "fs": "0.0.1-security",
+        "twilio": "^3.66.0",
+        "xmldom": "0.1.27",
+        "util": "0.11.0",
+        "@twilio/runtime-handler": "1.0.1"
+    },
+    "scripts": {}
+  }
+  
