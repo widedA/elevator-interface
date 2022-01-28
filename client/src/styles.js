@@ -1,6 +1,5 @@
 const styles= {
     container: {
-      backgroundImage: 'linear-gradient(grey, white, grey)',
       padding: '50px 120px',
     },
     screen: {
@@ -32,12 +31,6 @@ const styles= {
       display: 'flex',
       justifyContent: 'space-between',
       paddingBottom: '40px',
-    },
-    last: {
-      alignItems: 'center',
-      display: 'flex',
-      justifyContent: 'space-between',
-      paddingBottom: '100px'
     },
     button: {
       backgroundImage: 'linear-gradient(to right, darkGrey, darkGrey, white)',

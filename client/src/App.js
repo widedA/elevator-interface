@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Device } from '@twilio/voice-sdk';
 import { Client as ConversationsClient } from '@twilio/conversations';
-
+import { connect } from 'twilio-video'
 import { OUTBOUND_NUMBER } from './constants';
 import styles from './styles'
 import NotificationIcon from './notificationIcon'
@@ -28,6 +28,7 @@ function App() {
     if(token && identity) {
       initDevice()
       initConversations()
+      initVideo()
     }
   }, [token, identity])
 
@@ -49,10 +50,7 @@ function App() {
 
   const initConversations = () => {
     const newConversationsClient = new ConversationsClient(token)
-    console.log({newConversationsClient})
-    newConversationsClient.on('connectionStateChanged', (state) => {
-      console.log('connectionStateChanged', state)
-    })
+    newConversationsClient.on('connectionStateChanged', (state) => {})
     newConversationsClient.on('conversationJoined', (conversation) =>
       setConversations([...conversations, conversation])
     );
@@ -61,7 +59,7 @@ function App() {
     );
     newConversationsClient.on('messageAdded', (message) => {
       const { author, body} = message
-      if (author === identity ) { 
+      if (author != identity ) { 
         setAlertText(body) 
       }
     })
@@ -69,10 +67,20 @@ function App() {
     setConversationsClient(newConversationsClient)
   };
 
+  const initVideo = () => {
+    connect(token, { name:'elevator', audio: true, video: true }).then(room => {
+      room.on('participantConnected', participant => {
+        console.log(`A remote Participant connected: ${participant}`);
+      });
+    }, error => {
+      console.error(`Unable to connect to Room: ${error.message}`);
+    });
+  }
+
   const callEmergency = async () => {
     const params = { To: OUTBOUND_NUMBER}
     if (device) {
-      console.log(`Attempting to call ${params.To} ...`);
+      setAlertText('Calling emergency line')
 
       const call = await device.connect({ params });
       /*  Uncomment & adapt listneres to the UI
@@ -109,7 +117,7 @@ function App() {
         <button  onClick={() => console.log("floor 5")} style={styles.button}><label style={styles.text}>5</label></button>
         <button  onClick={() => console.log("floor 6")} style={styles.button}><label style={styles.text}>6</label></button>
       </div>
-      <div style={styles.last}>
+      <div style={styles.content}>
         <button  onClick={() => console.log('close')} style={styles.button}>
           <div style={styles.actionButtons}>
             <div style={styles.arrowRight}></div>
