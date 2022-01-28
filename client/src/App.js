@@ -93,6 +93,11 @@ function App() {
       setAlertText('Unable to make call. Please try again.');
     }
   }
+
+  const sendMessage = (msg) => {
+    conversations[0].sendMessage(msg);
+    setAlertText(`${alertText} - ${msg}`)
+  };
   
   return (
     <div style={styles.container}>
@@ -118,7 +123,7 @@ function App() {
         <button  onClick={() => console.log("floor 6")} style={styles.button}><label style={styles.text}>6</label></button>
       </div>
       <div style={styles.content}>
-        <button  onClick={() => console.log('close')} style={styles.button}>
+        <button  onClick={() => sendMessage('no')} style={styles.button}>
           <div style={styles.actionButtons}>
             <div style={styles.arrowRight}></div>
             <div style={styles.verticalLign}></div>
@@ -126,7 +131,7 @@ function App() {
           </div>
         </button>
         <button  onClick={callEmergency} style={styles.button}><NotificationIcon/></button>
-        <button  onClick={() => console.log('open')} style={styles.button}>
+        <button  onClick={() => sendMessage('yes')} style={styles.button}>
           <div style={styles.actionButtons}>
             <div style={styles.arrowLeft}></div>
             <div style={styles.verticalLign}></div>
