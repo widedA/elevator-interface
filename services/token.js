@@ -1,6 +1,6 @@
 exports.handler = function (context, event, callback) {
   
-  IDENTITY = event.identity || 'elevator';
+  IDENTITY = 'elevator';
 
   const {
     TWILIO_TWIML_APP_SID,

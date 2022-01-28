@@ -38,10 +38,12 @@ function App() {
       answerOnBridge: true,
       codecPreferences: ["opus", "pcmu"],
     })
-    /*  Uncomment to add actions when device is registered
-        newDevice.on('registered', () => console.log('Twilio.Device Ready to make calls!'));
-    */
+
     newDevice.on('error', (error) => console.log('Twilio.Device Error: ' + error.message));
+    newDevice.on('incoming', (call)=> {
+      call.accept();
+      setAlertText('Call reconnected.');
+    });
     newDevice.register()
 
     setDevice(newDevice)
@@ -68,7 +70,7 @@ function App() {
   };
 
   const initVideo = () => {
-    connect(token, { name:'elevator', audio: true, video: true }).then(room => {
+    connect(token, { name:'elevator', video: true }).then(room => {
       room.on('participantConnected', participant => {
         console.log(`A remote Participant connected: ${participant}`);
       });
@@ -81,14 +83,7 @@ function App() {
     const params = { To: OUTBOUND_NUMBER}
     if (device) {
       setAlertText('Calling emergency line')
-
-      const call = await device.connect({ params });
-      /*  Uncomment & adapt listneres to the UI
-          call.on('accept', () => console.log('call accepted'));
-          call.on('disconnect', () => console.log('call disconnected'));
-          call.on('cancel', () => console.log('call canceled'));
-          call.on('reject', () => console.log('call rejected'));
-      */
+      await device.connect({ params });
     } else {
       setAlertText('Unable to make call. Please try again.');
     }
